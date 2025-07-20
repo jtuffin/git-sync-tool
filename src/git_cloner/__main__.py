@@ -3,6 +3,7 @@ Main entry point for the git-cloner command-line tool.
 """
 
 import argparse
+import os
 import sys
 from .git_cloner import GitCloner
 
@@ -20,6 +21,8 @@ Examples:
   %(prog)s git@github.com:user/repo.git
   %(prog)s --sync
   %(prog)s --list
+  %(prog)s --base-dir /path/to/repos https://github.com/user/repo.git
+  export REPOS_BASE_DIR=/path/to/repos && %(prog)s --sync
         """
     )
     
@@ -43,7 +46,7 @@ Examples:
     
     parser.add_argument(
         "--base-dir",
-        help="Base directory for repositories (default: ~/code)"
+        help="Base directory for repositories (default: ~/code, or REPOS_BASE_DIR env var)"
     )
     
     parser.add_argument(
@@ -68,8 +71,9 @@ Examples:
         print("Error: Please specify only one operation")
         sys.exit(1)
     
-    # Initialize cloner
-    cloner = GitCloner(args.base_dir)
+    # Initialize cloner with base directory priority: CLI arg > env var > default
+    base_dir = args.base_dir or os.environ.get('REPOS_BASE_DIR')
+    cloner = GitCloner(base_dir)
     
     # Execute requested operation
     try:

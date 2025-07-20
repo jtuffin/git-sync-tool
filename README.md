@@ -2,6 +2,10 @@
 
 A Python tool to clone git repositories into an organized folder structure and maintain an index of repositories with their metadata.
 
+Have you ever needed a local sync of different repo projects and libraries?
+
+This tool is intended to enable a local sync of a collection of git repos, and keep them fresh. 
+
 ## Features
 
 - **Organized Directory Structure**: Clones repositories into `~/code/{git_host}/{org_or_user}/{repo_name}/`
@@ -23,7 +27,7 @@ pip install git-cloner
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/git-cloner.git
+git clone https://github.com/jtuffin/git-cloner.git
 cd git-cloner
 
 # Install in development mode
@@ -37,7 +41,7 @@ pip install -e .
 
 ```bash
 # Clone and run directly
-git clone https://github.com/yourusername/git-cloner.git
+git clone https://github.com/jtuffin/git-cloner.git
 cd git-cloner
 python -m git_cloner --help
 ```
@@ -95,10 +99,44 @@ git-cloner --list
 
 ### Custom Base Directory
 
+You can specify a custom base directory using either a command line argument or environment variable:
+
 ```bash
-# Use a custom base directory instead of ~/code
+# Using command line argument (highest priority)
 git-cloner https://github.com/user/repo.git --base-dir /path/to/repos
+
+# Using environment variable
+export REPOS_BASE_DIR=/path/to/repos
+git-cloner https://github.com/user/repo.git
+
+# Environment variable persists for the session
+export REPOS_BASE_DIR=/path/to/repos
+git-cloner --sync
+git-cloner --list
 ```
+
+**Priority Order:**
+1. Command line `--base-dir` argument (highest priority)
+2. `REPOS_BASE_DIR` environment variable
+3. Default `~/code` directory (lowest priority)
+
+## Configuration
+
+### Environment Variables
+
+The tool supports the following environment variables:
+
+- **`REPOS_BASE_DIR`**: Set the default base directory for all repository operations
+  ```bash
+  export REPOS_BASE_DIR=/home/user/my-repos
+  ```
+
+### Command Line Arguments
+
+- **`--base-dir`**: Override the base directory for a single command
+  ```bash
+  git-cloner --base-dir /tmp/test-repos https://github.com/user/repo.git
+  ```
 
 ## Directory Structure
 
